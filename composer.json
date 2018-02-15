@@ -1,0 +1,13 @@
+{
+  "name": "jnettik/terminus-mass-run",
+  "description": "Run Terminus commands on multiple Pantheon sites.",
+  "type": "terminus-plugin",
+  "autoload": {
+    "psr-4": { "Pantheon\\TerminusMassRun\\": "src" }
+  },
+  "extra": {
+    "terminus": {
+      "compatible-version": "1.*"
+    }
+  }
+}
