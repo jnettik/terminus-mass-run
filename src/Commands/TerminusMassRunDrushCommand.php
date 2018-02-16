@@ -18,11 +18,13 @@ class TerminusMassRunDrushCommand extends DrushCommand implements SiteAwareInter
    * @command remote:mass:drush
    * @aliases mass-drush
    *
-   * @param array $cmd
+   * @param array $cmd The Drush command to run on sites.
    * @param array $options
    * @return string Command output
    *
-   * @option env The Pantheon environments to target. Defaults to `live`.
+   * @option env The Pantheon environments to target.
+   *
+   * @usage terminus site:list --format=list | terminus remote:mass:drush --env=<env> -- cr Clear cache on all sites.
    */
   public function runCommand(array $cmd, $options = ['env' => 'live']) {
     $sites = $this->getAllSites();
