@@ -27,7 +27,10 @@ class TerminusMassRunDrushCommand extends DrushCommand implements SiteAwareInter
    * @usage terminus site:list --format=list | terminus remote:mass:drush --env=<env> -- cr Clear cache on all sites.
    */
   public function runCommand(array $cmd, $options = ['env' => 'live']) {
-    $sites = $this->getAllSites();
+    $sites = array_filter($this->getAllSites(), function ($site) {
+      // Check it's a Drupal site.
+      return in_array($site->get('framework'), ['drupal', 'drupal8']);
+    });
     $output = '';
 
     foreach ($sites as $site) {
