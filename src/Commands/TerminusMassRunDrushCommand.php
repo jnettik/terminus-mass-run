@@ -2,6 +2,7 @@
 
 namespace Pantheon\TerminusMassRun\Commands;
 
+use Pantheon\Terminus\Exceptions\TerminusProcessException;
 use Pantheon\Terminus\Site\SiteAwareInterface;
 use Pantheon\Terminus\Commands\Remote\DrushCommand;
 use Pantheon\TerminusMassRun\Traits\TerminusMassRunTrait;
@@ -27,14 +28,24 @@ class TerminusMassRunDrushCommand extends DrushCommand implements SiteAwareInter
    * @usage terminus site:list --format=list | terminus remote:mass:drush --env=<env> -- cr Clear cache on all sites.
    */
   public function runCommand(array $cmd, $options = ['env' => 'live']) {
+    $output = '';
     $sites = array_filter($this->getAllSites(), function ($site) {
       // Check it's a Drupal site.
       return in_array($site->get('framework'), ['drupal', 'drupal8']);
     });
-    $output = '';
 
     foreach ($sites as $site) {
-      $output .= $this->drushCommand("{$site->getName()}.{$options['env']}", $cmd);
+      try {
+        $output .= $this->drushCommand("{$site->getName()}.{$options['env']}", $cmd);
+      }
+      catch (TerminusProcessException $e) {
+        // If the command doesn't run, we want to skip it and continue to run
+        // the rest of the scripts.
+        $this->log()->error('Drush command for {site_name} could not be run.', [
+          'site_name' => $site->getName(),
+        ]);
+        continue;
+      }
     }
 
     return $output;
