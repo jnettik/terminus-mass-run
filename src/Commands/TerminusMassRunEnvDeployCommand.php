@@ -7,7 +7,7 @@ use Pantheon\Terminus\Site\SiteAwareInterface;
 use Pantheon\Terminus\Commands\Env\DeployCommand;
 use Pantheon\TerminusMassRun\Traits\TerminusMassRunTrait;
 
-class TerminusMassRunDrushCommand extends DeployCommand implements SiteAwareInterface {
+class TerminusMassRunEnvDeployCommand extends DeployCommand implements SiteAwareInterface {
 
   use TerminusMassRunTrait;
 
