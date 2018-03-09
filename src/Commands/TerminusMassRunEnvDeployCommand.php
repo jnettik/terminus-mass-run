@@ -33,6 +33,11 @@ class TerminusMassRunEnvDeployCommand extends DeployCommand implements SiteAware
   public function massDeploy($options = ['env' => 'live', 'sync-content' => FALSE, 'note' => 'Deploy from Terminus', 'cc' => FALSE, 'updatedb' => FALSE,]) {
     $output = '';
 
+    $sites = array_filter($this->getAllSites(), function ($site) {
+      // Check it's a Drupal site.
+      return in_array($site->get('framework'), ['drupal', 'drupal8']);
+    });
+
     foreach ($sites as $site) {
       try {
         $output .= $this->deploy("{$site->getName()}.{$options['env']}", $options);
