@@ -4,6 +4,8 @@ Terminus Mass Run takes a piped list of Pantheon sites runs a Terminus command o
 
 * `terminus remote:drush`
 * `terminus backup:create`
+* `terminus env:deploy`
+* `terminus connection:set`
 
 Terminus provides several ways of getting a list of sites, the simplest being `terminus site:list --format=list`. The `--format=list` flat gets a list of site IDs that can be passed into Terminus Mass Run commands. For example, say you need to rebuild the cache on all production sites you have access too. Run:
 
