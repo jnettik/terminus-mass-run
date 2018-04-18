@@ -39,6 +39,17 @@ class TerminusMassRunEnvDeployCommand extends DeployCommand implements SiteAware
     });
 
     foreach ($sites as $site) {
+      // Make sure site environment is created. If not, this will create it for
+      // us and we don't want that.
+      if (!$site->getEnvironments()->get($options['env'])->isInitialized()) {
+        $this->log()->warning('{env} environment for {site_name} does not exist.', [
+          'site_name' => $site->getName(),
+          'env' => $options['env'],
+        ]);
+
+        continue;
+      }
+
       try {
         $output .= $this->deploy("{$site->getName()}.{$options['env']}", $options);
       }
