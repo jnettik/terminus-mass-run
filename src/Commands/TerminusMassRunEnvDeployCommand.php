@@ -50,6 +50,17 @@ class TerminusMassRunEnvDeployCommand extends DeployCommand implements SiteAware
         continue;
       }
 
+      // If we're deploying to the test environment and `sync-content` is
+      // enabled, but there is no live environment created, disable the content
+      // sync option for that site.
+      if (
+        $options['env'] === 'test' &&
+        $options['sync-content'] &&
+        !$site->getEnvironments()->get('live')->isInitialized()
+      ) {
+        $options['sync-content'] = FALSE;
+      }
+
       try {
         $output .= $this->deploy("{$site->getName()}.{$options['env']}", $options);
       }
