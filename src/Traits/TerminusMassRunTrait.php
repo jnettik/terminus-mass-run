@@ -31,6 +31,40 @@ trait TerminusMassRunTrait {
   }
 
   /**
+   * Filter sites by a provided Upstream UUID.
+   *
+   * @param array $sites
+   *   An array of Pantheon Site objects.
+   * @param string $upstream_uuid
+   *   The UUID of the Upstream we want to target.
+   *
+   * @return array
+   *   An array of Site objects matching the passed upstream.
+   */
+  protected function filterUpstream(array $sites, $upstream_uuid = '') {
+    return array_filter($sites, function ($site) use ($upstream_uuid) {
+      return $site->getUpstream()->serialize()['product_id'] == $upstream_uuid;
+    });
+  }
+
+  /**
+   * Filter sites by a provided array of frameworks. Defaults to Drupal sites.
+   *
+   * @param array $sites
+   *   An array of Pantheon Site objects.
+   * @param array $frameworks
+   *   An array of framework IDs.
+   *
+   * @return array
+   *   An array of Site objects matching the passed frameworks.
+   */
+  protected function filterFrameworks(array $sites, array $frameworks = ['drupal', 'drupal8']) {
+    return array_filter($sites, function ($site) use ($frameworks) {
+      return in_array($site->get('framework'), $frameworks);
+    });
+  }
+
+  /**
    * Read a list of site ids passed through STDIN and load the sites.
    *
    * @return array
@@ -58,16 +92,24 @@ trait TerminusMassRunTrait {
   /**
    * Get a list of the sites and updates with the given options.
    *
+   * @param string $upstream
+   *   A UUID of an upstream to filter by.
+   *
    * @return array
    * @throws \Pantheon\Terminus\Exceptions\TerminusException
    */
-  protected function getAllSites() {
+  protected function getAllSites($upstream = '') {
     $sites = $this->readSitesFromSTDIN();
 
     if (empty($sites)) {
       throw new TerminusException('Input a list of sites by piping it to this command. Try running "terminus site:list | terminus {cmd}".', [
         'cmd' => $this->command,
       ]);
+    }
+
+    // Filter by upstreams if passed.
+    if (!empty($upstream)) {
+      $sites = $this->filterUpstream($sites, $upstream);
     }
 
     $this->log()->notice("{count} sites found.", ['count' => count($sites)]);

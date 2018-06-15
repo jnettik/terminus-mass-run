@@ -20,22 +20,21 @@ class TerminusMassRunConnectionSetCommand extends SetCommand implements SiteAwar
    * @aliases mass-connection-set
    *
    * @param string $mode [git|sftp] Connection mode
-   * @param string $site_env Environment to target. Defaults to `dev`. Excludes `test` and `live`.
+   * @param string $options
    * @return string Command output
+   *
+   * @option env The Pantheon environments to target.
+   * @option upstream UUID of a Pantheon Upstream to filter by.
    *
    * @usage terminus site:list --format=list | terminus env:mass:deploy --env=<env> --note=<note>
    */
-  public function massConnectionSet($mode, $site_env = 'dev') {
+  public function massConnectionSet($mode, array $options = ['env' => 'live', 'upstream' => '']) {
     $output = '';
-
-    $sites = array_filter($this->getAllSites(), function ($site) {
-      // Check it's a Drupal site.
-      return in_array($site->get('framework'), ['drupal', 'drupal8']);
-    });
+    $sites = $this->filterFrameworks($this->getAllSites($options['upstream']), ['drupal', 'drupal8']);
 
     foreach ($sites as $site) {
       try {
-        $output .= $this->connectionSet("{$site->getName()}.{$site_env}", $mode);
+        $output .= $this->connectionSet("{$site->getName()}.{$options['env']}", $mode);
       }
       catch (TerminusException $e) {
         // If the command doesn't run, we want to skip it and continue to run

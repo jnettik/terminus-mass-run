@@ -27,16 +27,14 @@ class TerminusMassRunEnvDeployCommand extends DeployCommand implements SiteAware
    * @option string $cc Clear caches after deploy
    * @option string $updatedb Run update.php after deploy (Drupal only)
    * @option string $note Custom deploy log message
+   * @option upstream UUID of a Pantheon Upstream to filter by.
    *
    * @usage terminus site:list --format=list | terminus env:mass:deploy --env=<env> --note=<note>
    */
-  public function massDeploy($options = ['env' => 'live', 'sync-content' => FALSE, 'note' => 'Deploy from Terminus', 'cc' => FALSE, 'updatedb' => FALSE,]) {
+  public function massDeploy($options = ['env' => 'live', 'sync-content' => FALSE, 'note' => 'Deploy from Terminus', 'cc' => FALSE, 'updatedb' => FALSE, 'upstream' => '']) {
     $output = '';
 
-    $sites = array_filter($this->getAllSites(), function ($site) {
-      // Check it's a Drupal site.
-      return in_array($site->get('framework'), ['drupal', 'drupal8']);
-    });
+    $sites = $this->filterFrameworks($this->getAllSites($options['upstream']), ['drupal', 'drupal8']);
 
     foreach ($sites as $site) {
       // Make sure site environment is created. If not, this will create it for

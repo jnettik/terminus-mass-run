@@ -24,15 +24,13 @@ class TerminusMassRunDrushCommand extends DrushCommand implements SiteAwareInter
    * @return string Command output
    *
    * @option env The Pantheon environments to target.
+   * @option upstream UUID of a Pantheon Upstream to filter by.
    *
    * @usage terminus site:list --format=list | terminus remote:mass:drush --env=<env> -- cr Clear cache on all sites.
    */
-  public function runCommand(array $cmd, $options = ['env' => 'live']) {
+  public function runCommand(array $cmd, array $options = ['env' => 'live', 'upstream' => '']) {
     $output = '';
-    $sites = array_filter($this->getAllSites(), function ($site) {
-      // Check it's a Drupal site.
-      return in_array($site->get('framework'), ['drupal', 'drupal8']);
-    });
+    $sites = $this->filterFrameworks($this->getAllSites($options['upstream']), ['drupal', 'drupal8']);
 
     foreach ($sites as $site) {
       try {
