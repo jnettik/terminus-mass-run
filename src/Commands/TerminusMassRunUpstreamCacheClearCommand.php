@@ -18,16 +18,17 @@ class TerminusMassRunUpstreamCacheClearCommand extends ClearCacheCommand impleme
    * @command site:mass:upstream:clear-cache
    * @aliases mass-upstream-check
    *
+   * @param $options
+   *
    * @return string Status
+   *
+   * @option upstream UUID of a Pantheon Upstream to filter by.
    *
    * @usage terminus site:list --format=list | terminus site:mass:upstream:clear-cache Clear cache on all sites.
    */
-  public function checkUpdates() {
+  public function checkUpdates($options = ['upstream' => '']) {
     $output = '';
-    $sites = array_filter($this->getAllSites(), function ($site) {
-      // Check it's a Drupal site.
-      return in_array($site->get('framework'), ['drupal', 'drupal8']);
-    });
+    $sites = $this->filterFrameworks($this->getAllSites($options['upstream']), ['drupal', 'drupal8']);
 
     foreach ($sites as $site) {
       $output .= $this->clearCache($site->getName());
