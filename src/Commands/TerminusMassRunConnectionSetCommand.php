@@ -28,7 +28,7 @@ class TerminusMassRunConnectionSetCommand extends SetCommand implements SiteAwar
    *
    * @usage terminus site:list --format=list | terminus env:mass:deploy --env=<env> --note=<note>
    */
-  public function massConnectionSet($mode, array $options = ['env' => 'live', 'upstream' => '']) {
+  public function massConnectionSet($mode, array $options = ['env' => 'dev', 'upstream' => '']) {
     $output = '';
     $sites = $this->filterFrameworks($this->getAllSites($options['upstream']), ['drupal', 'drupal8']);
 

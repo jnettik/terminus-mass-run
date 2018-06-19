@@ -31,7 +31,7 @@ class TerminusMassRunEnvDeployCommand extends DeployCommand implements SiteAware
    *
    * @usage terminus site:list --format=list | terminus env:mass:deploy --env=<env> --note=<note>
    */
-  public function massDeploy($options = ['env' => 'live', 'sync-content' => FALSE, 'note' => 'Deploy from Terminus', 'cc' => FALSE, 'updatedb' => FALSE, 'upstream' => '']) {
+  public function massDeploy($options = ['env' => 'dev', 'sync-content' => FALSE, 'note' => 'Deploy from Terminus', 'cc' => FALSE, 'updatedb' => FALSE, 'upstream' => '']) {
     $output = '';
 
     $sites = $this->filterFrameworks($this->getAllSites($options['upstream']), ['drupal', 'drupal8']);

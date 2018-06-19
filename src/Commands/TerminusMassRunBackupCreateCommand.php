@@ -21,7 +21,7 @@ class TerminusMassRunBackupCreateCommand extends CreateCommand implements SiteAw
    * @option string $element [all|code|files|database|db] Element to be backed up
    * @option integer $keep-for Retention period, in days, to retain backup
    */
-  public function createBackup($options = ['env' => 'live', 'element' => 'all', 'keep-for' => 365]) {
+  public function createBackup($options = ['env' => 'dev', 'element' => 'all', 'keep-for' => 365]) {
     foreach ($this->getAllSites() as $site) {
       $site_name = "{$site->getName()}.{$options['env']}";
       $this->log()->notice("Backing up {site_name}.", ['site_name' => $site_name]);
